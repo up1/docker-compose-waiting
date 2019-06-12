@@ -1,0 +1,23 @@
+version: '3'
+services:
+    mysql:
+      image: mysql:5.7
+      ports:
+      - "3306:3306"
+      environment:
+        MYSQL_ROOT_PASSWORD: "root"
+        MYSQL_DATABASE: "database"
+
+    mysql_seeding:
+      build: ./seeding
+      depends_on:
+        - mysql
+      command: >
+        /bin/sh -c "
+          while ! nc -z -w1 mysql 3306;
+          do
+            echo sleeping;
+            sleep 1;
+          done;
+          echo Connected!;
+        "
